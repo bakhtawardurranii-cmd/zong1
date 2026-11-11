@@ -108,17 +108,17 @@ const lbx=(u,w,h,x)=>{const g=new THREE.Group();g.position.set(x,1.9,0);sc.add(g
 lbx(IMG_L,.95,.95,-1.245);lbx(IMG_R,1.65,.95,1.595);
 
 /* laptop */
-const lap=new THREE.Group();lap.position.set(0,TOP+.003,.72);sc.add(lap);const al=mat(0xb8bcc4,{metalness:.6,roughness:.35});
+const lap=new THREE.Group();lap.position.set(-.055,TOP+.003,.78);lap.rotation.y=-Math.PI/2;sc.add(lap);const al=mat(0xb8bcc4,{metalness:.6,roughness:.35});
 add(B(.32,.016,.22),al,0,.008,0,lap);add(B(.28,.002,.1),mat(0x23252b),0,.017,-.02,lap);
 const lid=new THREE.Group();lid.position.set(0,.016,-.11);lid.rotation.x=-.28;lap.add(lid);add(B(.32,.21,.01),al,0,.105,0,lid);scr(.30,.19,lapTex,lid,.105,.0055);
 
 /* tablet */
-const tab=new THREE.Group();tab.position.set(-.03,TOP+.003,1.1);tab.rotation.y=.14;sc.add(tab);
+const tab=new THREE.Group();tab.position.set(.165,TOP+.003,.78);tab.rotation.y=Math.PI/2;sc.add(tab);
 const tt=new THREE.Group();tt.rotation.x=-.3;tab.add(tt);add(B(.24,.16,.01),mat(0x15161a),0,.08,0,tt);scr(.225,.145,tabTex,tt,.08,.0055);
 add(B(.04,.12,.006),mat(0x15161a),0,.055,-.05,tab).rotation.x=.45;
 
 /* surveillance camera */
-const cm=new THREE.Group();cm.position.set(.1,TOP+.003,1.4);cm.rotation.y=-.55;sc.add(cm);const W3=mat(0xf7f7f7,{roughness:.3});
+const cm=new THREE.Group();cm.position.set(.075,TOP+.003,1.64);cm.rotation.y=0;sc.add(cm);const W3=mat(0xf7f7f7,{roughness:.3});
 add(new THREE.CylinderGeometry(.02,.03,.07,24),W3,0,.035,0,cm);
 add(new THREE.CylinderGeometry(.032,.032,.16,32),W3,0,.105,0,cm).rotation.x=Math.PI/2;
 add(new THREE.CylinderGeometry(.038,.038,.05,32,1,true),mat(0xf7f7f7,{side:THREE.DoubleSide}),0,.105,.09,cm).rotation.x=Math.PI/2;
@@ -126,7 +126,7 @@ add(new THREE.CylinderGeometry(.026,.026,.01,32),mat(0x050507,{roughness:.1}),0,
 add(new THREE.SphereGeometry(.012,16,12),mat(0x2a6bff,{emissive:0x1239aa,roughness:.1}),0,.105,.089,cm);
 
 /* phone – front‑most */
-const ph=new THREE.Group();ph.position.set(0,TOP+.003,1.66);ph.rotation.y=.08;sc.add(ph);
+const ph=new THREE.Group();ph.position.set(-.075,TOP+.003,1.64);ph.rotation.y=0;sc.add(ph);
 const pt=new THREE.Group();pt.rotation.x=-.5;ph.add(pt);add(B(.076,.158,.008),mat(0x111114,{roughness:.2}),0,.079,0,pt);scr(.068,.148,phTex,pt,.079,.0045);
 add(B(.05,.012,.06),mat(0x222226),0,.006,-.03,ph);
 
@@ -164,12 +164,12 @@ dm(DG,[-.762,tp,0],[-.762,tp,f(1.5)],'1.5 ft deep',[.05,0,0]);
 dm(DG,[f(-3.75),.01,f(6.6)],[f(5.25),.01,f(6.6)],'9 ft overall',[0,0,.06]);seg(DG,[f(-3.75),.01,f(6.6)],[f(-3.75),.01,f(1.5)]);seg(DG,[f(5.25),.01,f(6.6)],[f(5.25),.01,f(1.5)]);
 dm(DG,[f(-3.75)-.14,0,f(1.5)],[f(-3.75)-.14,TOP,f(1.5)],'2.5 ft high',[.05,0,0]);
 {const x0=f(.75),x1=f(2.25),y0=.08,y1=.08+2*F,z=f(1.5)+.015;[[x0,y0,x1,y0],[x1,y0,x1,y1],[x1,y1,x0,y1],[x0,y1,x0,y0]].forEach(r=>seg(DG,[r[0],r[1],z],[r[2],r[3],z]));tag(DG,'Door 1.5 × 2 ft',[(x0+x1)/2,(y0+y1)/2,z+.02])}
-stand(-2.0,.3,sTex(1));stand(2.7,-.3,sTex(0));
+
 
 /* labels */
 const labels=[];
 const lab=(t,x,y,z)=>{const m=cv(512,128,(c,W,H)=>{rr(c,4,14,W-8,H-28,50,M);tx(c,t,W/2,H/2+2,44,'#fff','center')});const s=new THREE.Sprite(new THREE.SpriteMaterial({map:m,depthTest:false}));s.scale.set(.36,.09,1);s.position.set(x,y,z);s.renderOrder=9;labels.push(s);sc.add(s)};
-lab('1 · SPEED',0,.98,1.7);lab('2 · SURVEILLANCE',.12,1.02,1.38);lab('3 · GAMING & 3D',0,1.12,.72);lab('4 · 4K VIDEO',0,2.4,.1);
+lab('1 · SPEED',-.1,.92,1.64);lab('2 · SURVEILLANCE',.1,1.04,1.64);lab('3 · GAMING & 3D',-.05,1.14,.78);lab('4 · 4K VIDEO',0,2.4,.1);
 function LB(){labels.forEach(s=>s.visible=!s.visible)}
 function SB(){const on=!DG.visible;SZ.forEach(g=>g.visible=on);const b=document.getElementById('sb');b.textContent='Sizes: '+(on?'ON':'OFF');b.classList.toggle('on',on)}
 
