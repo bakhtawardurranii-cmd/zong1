@@ -107,28 +107,63 @@ const lbx=(u,w,h,x)=>{const g=new THREE.Group();g.position.set(x,1.9,0);sc.add(g
  const l=new THREE.PointLight(0xfff0f8,.35,2.2);l.position.set(0,0,.5);g.add(l)};
 lbx(IMG_L,.95,.95,-1.245);lbx(IMG_R,1.65,.95,1.595);
 
-/* laptop */
-const lap=new THREE.Group();lap.position.set(-.055,TOP+.003,.78);lap.rotation.y=-Math.PI/2;sc.add(lap);const al=mat(0xb8bcc4,{metalness:.6,roughness:.35});
+/* ---------- gadget layout (back → front): ZHomeFi router + laptop + 2 CPE + landline on the wall run; iPhone 17, iPhone 17, camera down the stem ---------- */
+function rbg(w,h,d,r){const s=new THREE.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.absarc(x+w-r,y+r,r,-Math.PI/2,0);s.lineTo(x+w,y+h-r);s.absarc(x+w-r,y+h-r,r,0,Math.PI/2);s.lineTo(x+r,y+h);s.absarc(x+r,y+h-r,r,Math.PI/2,Math.PI);s.lineTo(x,y+r);s.absarc(x+r,y+r,r,Math.PI,Math.PI*1.5);const g=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:false});g.translate(0,0,-d/2);return g}
+const dec=(w,h,t,p,y,z)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshStandardMaterial({map:t,transparent:true,roughness:.4}));m.position.set(0,y,z);p.add(m)};
+
+/* laptop – left of the router, facing straight */
+const lap=new THREE.Group();lap.position.set(-.48,TOP+.003,.27);sc.add(lap);const al=mat(0xb8bcc4,{metalness:.6,roughness:.35});
 add(B(.32,.016,.22),al,0,.008,0,lap);add(B(.28,.002,.1),mat(0x23252b),0,.017,-.02,lap);
 const lid=new THREE.Group();lid.position.set(0,.016,-.11);lid.rotation.x=-.28;lap.add(lid);add(B(.32,.21,.01),al,0,.105,0,lid);scr(.30,.19,lapTex,lid,.105,.0055);
 
-/* tablet */
-const tab=new THREE.Group();tab.position.set(.165,TOP+.003,.78);tab.rotation.y=Math.PI/2;sc.add(tab);
-const tt=new THREE.Group();tt.rotation.x=-.3;tab.add(tt);add(B(.24,.16,.01),mat(0x15161a),0,.08,0,tt);scr(.225,.145,tabTex,tt,.08,.0055);
-add(B(.04,.12,.006),mat(0x15161a),0,.055,-.05,tab).rotation.x=.45;
+/* two 5G CPE units – right of the router */
+const cpeT=(w,h,tall)=>cv(w,h,(x,W,H)=>{x.clearRect(0,0,W,H);
+ if(tall){logo(x,W*.1,H*.05,W*.25);x.strokeStyle='#777';x.lineWidth=4;x.beginPath();x.arc(W/2,H*.27,36,0,7);x.stroke();tx(x,'5G',W/2,H*.27,30,'#555','center',800);zh(x,W/2,H*.45,30,'#333');[['5G','#27b8ff'],['4G','#27b8ff'],['STATUS','#2ee06b']].forEach((l,i)=>{const y=H*(.78+i*.06);x.fillStyle=l[1];x.beginPath();x.arc(W*.3,y,6,0,7);x.fill();tx(x,l[0],W*.3+16,y,18,'#666','left',600)})}
+ else{logo(x,W*.08,H*.1,W*.19);zh(x,W*.5,H*.52,50,'#333');tx(x,'5G CPE',W*.5,H*.7,26,'#777','center',700);[0,1,2].forEach(i=>{x.fillStyle=['#27b8ff','#27b8ff','#2ee06b'][i];x.beginPath();x.arc(W*.38+i*W*.12,H*.88,7,0,7);x.fill()})}});
+const cpeA=new THREE.Group();cpeA.position.set(.4,TOP+.003,.22);sc.add(cpeA);
+add(rbg(.11,.3,.09,.035),mat(0xfafafa,{roughness:.35}),0,.15,0,cpeA);dec(.1,.28,cpeT(220,600,1),cpeA,.15,.0455);
+const cpeB=new THREE.Group();cpeB.position.set(.8,TOP+.003,.22);sc.add(cpeB);
+add(rbg(.17,.2,.085,.04),mat(0xfafafa,{roughness:.35}),0,.1,0,cpeB);dec(.16,.19,cpeT(340,400,0),cpeB,.1,.043);
 
-/* surveillance camera */
-const cm=new THREE.Group();cm.position.set(.075,TOP+.003,1.64);cm.rotation.y=0;sc.add(cm);const W3=mat(0xf7f7f7,{roughness:.3});
+/* desktop corded landline (black, LCD, keypad, handset on the left, coil cord) – extreme right */
+const ldT=cv(520,800,(x,W,H)=>{x.fillStyle='#17171b';x.fillRect(0,0,W,H);
+ rr(x,90,40,340,122,12,'#2a2a2f');const g=x.createLinearGradient(0,52,0,150);g.addColorStop(0,'#c9e09c');g.addColorStop(1,'#a6c776');rr(x,102,52,316,98,6,g);
+ tx(x,'12:30',W/2,100,58,'#26331a','center',700);tx(x,'THU 12 NOV',W/2,136,16,'#3b4a28','center',700);
+ [['DEL',100],['OUT',175],['UP',250],['DOWN',325]].forEach(b=>{tx(x,b[0],b[1],196,12,'#bbb','center',700);x.fillStyle='#2f2f36';x.beginPath();x.arc(b[1],218,16,0,7);x.fill();x.strokeStyle='#4a4a53';x.lineWidth=3;x.stroke()});tx(x,'P.001',428,218,13,'#bbb','center',700);
+ const lt=['','ABC','DEF','GHI','JKL','MNO','PQRS','TUV','WXYZ','','',''];
+ for(let r=0;r<4;r++)for(let c=0;c<3;c++){const cx=130+c*130,cy=312+r*96,i=r*3+c;x.fillStyle='#2d2d34';x.beginPath();x.arc(cx,cy,35,0,7);x.fill();x.strokeStyle='#4a4a53';x.lineWidth=4;x.stroke();tx(x,'123456789*0#'[i],cx,cy+6,34,'#fff','center',700);if(lt[i])tx(x,lt[i],cx,cy-20,11,'#aaa','center',600)}
+ rr(x,78,676,84,32,16,'#2d2d34');tx(x,'SET',120,728,12,'#bbb','center',700);x.fillStyle='#2d2d34';x.beginPath();x.arc(228,692,13,0,7);x.fill();tx(x,'HOLD',228,728,12,'#bbb','center',700);
+ x.fillStyle='#ff2a2a';x.beginPath();x.arc(285,692,5,0,7);x.fill();rr(x,328,676,114,32,16,'#2d2d34');tx(x,'REDIAL',385,728,12,'#bbb','center',700);tx(x,'PAUSE',385,746,12,'#bbb','center',700)});
+const ll=new THREE.Group();ll.position.set(1.3,TOP+.003,.23);sc.add(ll);const blk=mat(0x15151a,{roughness:.55});
+const LW=.13,LD=.2,HB=.07,HF=.032,sl=Math.atan((HB-HF)/LD);
+const ws=new THREE.Shape([new THREE.Vector2(-LD/2,0),new THREE.Vector2(LD/2,0),new THREE.Vector2(LD/2,HF),new THREE.Vector2(-LD/2,HB)]);
+const wg=new THREE.ExtrudeGeometry(ws,{depth:LW,bevelEnabled:false});wg.translate(0,0,-LW/2);wg.rotateY(-Math.PI/2);add(wg,blk,.025,0,0,ll);
+const tpg=new THREE.Group();tpg.position.set(.025,(HB+HF)/2+.001,0);tpg.rotation.x=sl;ll.add(tpg);
+const tpm=new THREE.Mesh(new THREE.PlaneGeometry(LW,LD*1.01),new THREE.MeshStandardMaterial({map:ldT,roughness:.5}));tpm.rotation.x=-Math.PI/2;tpg.add(tpm);
+add(B(.062,.02,.2),blk,-.067,.01,0,ll);
+const hgm=rbg(.05,.2,.042,.02);hgm.rotateX(-Math.PI/2);add(hgm,mat(0x15151a,{roughness:.4}),-.067,.041,0,ll);
+const cp=new THREE.CatmullRomCurve3([new THREE.Vector3(-.067,.03,.1),new THREE.Vector3(-.067,.014,.15),new THREE.Vector3(-.02,.012,.165),new THREE.Vector3(-.012,.016,.1)]);
+const fr=cp.computeFrenetFrames(240,false),hp=[];
+for(let i=0;i<=240;i++){const t=i/240,q=cp.getPoint(t),a=t*Math.PI*2*16;hp.push(q.add(fr.normals[i].clone().multiplyScalar(Math.cos(a)*.006).add(fr.binormals[i].clone().multiplyScalar(Math.sin(a)*.006))))}
+const coil=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(hp),480,.0016,6),mat(0x111114,{roughness:.5}));coil.castShadow=true;ll.add(coil);
+
+/* iPhone 17 ×2 – facing straight, stem centre line */
+const ipTex=k=>cv(300,628,(x,W,H)=>{x.clearRect(0,0,W,H);rr(x,0,0,W,H,46,'#0b0b0d');x.save();x.beginPath();x.roundRect?x.roundRect(8,8,W-16,H-16,38):x.rect(8,8,W-16,H-16);x.clip();
+ if(k){bg(x,W,H,'#13201c','#0a0e10');x.strokeStyle='#ffffff22';x.lineWidth=2;[1,2].forEach(i=>{x.beginPath();x.moveTo(W/3*i,0);x.lineTo(W/3*i,H);x.moveTo(0,H/3*i);x.lineTo(W,H/3*i);x.stroke()});x.fillStyle='#ff3b3b';x.beginPath();x.arc(40,110,9,0,7);x.fill();tx(x,'LIVE · CAM 01',58,110,22,'#fff');tx(x,'ZHomeFi 5G',W/2,H-60,24,G,'center');rr(x,90,250,120,150,24,'rgba(255,255,255,.08)')}
+ else{bg(x,W,H,'#14141a','#2c0b22');tx(x,'SPEED TEST',W/2,120,26,'#fff','center');x.lineWidth=20;x.lineCap='round';x.strokeStyle='#333';x.beginPath();x.arc(W/2,320,95,Math.PI*.8,Math.PI*2.2);x.stroke();x.strokeStyle=G;x.beginPath();x.arc(W/2,320,95,Math.PI*.8,Math.PI*1.9);x.stroke();tx(x,'1.2',W/2,315,68,'#fff','center',800);tx(x,'Gbps',W/2,368,26,M,'center');tx(x,'4G · 5G',W/2,520,28,'#fff','center')}
+ x.restore();rr(x,W/2-45,22,90,28,14,'#000')});
+function iph(px,pz,k){const g=new THREE.Group();g.position.set(px,TOP+.003,pz);sc.add(g);const t=new THREE.Group();t.rotation.x=-.32;g.add(t);
+ add(rbg(.0715,.1496,.0088,.011),mat(0xd9dae0,{metalness:.5,roughness:.3}),0,.0748,0,t);dec(.0715,.1496,ipTex(k),t,.0748,.0046);
+ add(B(.06,.01,.05),mat(0x222226),0,.005,-.012,g);add(B(.03,.135,.006),mat(0x222226),0,.066,-.055,g).rotation.x=.37}
+iph(0,1.2,0);iph(0,.82,1);
+
+/* surveillance camera – very front of the stem, facing straight */
+const cm=new THREE.Group();cm.position.set(0,TOP+.003,1.6);sc.add(cm);const W3=mat(0xf7f7f7,{roughness:.3});
 add(new THREE.CylinderGeometry(.02,.03,.07,24),W3,0,.035,0,cm);
 add(new THREE.CylinderGeometry(.032,.032,.16,32),W3,0,.105,0,cm).rotation.x=Math.PI/2;
 add(new THREE.CylinderGeometry(.038,.038,.05,32,1,true),mat(0xf7f7f7,{side:THREE.DoubleSide}),0,.105,.09,cm).rotation.x=Math.PI/2;
 add(new THREE.CylinderGeometry(.026,.026,.01,32),mat(0x050507,{roughness:.1}),0,.105,.082,cm).rotation.x=Math.PI/2;
 add(new THREE.SphereGeometry(.012,16,12),mat(0x2a6bff,{emissive:0x1239aa,roughness:.1}),0,.105,.089,cm);
-
-/* phone – front‑most */
-const ph=new THREE.Group();ph.position.set(-.075,TOP+.003,1.64);ph.rotation.y=0;sc.add(ph);
-const pt=new THREE.Group();pt.rotation.x=-.5;ph.add(pt);add(B(.076,.158,.008),mat(0x111114,{roughness:.2}),0,.079,0,pt);scr(.068,.148,phTex,pt,.079,.0045);
-add(B(.05,.012,.06),mat(0x222226),0,.006,-.03,ph);
 
 /* 2.5 × 3 ft standees */
 const SW=2.5*F,SH=3*F,SZ=[];
@@ -169,7 +204,7 @@ dm(DG,[f(-3.75)-.14,0,f(1.5)],[f(-3.75)-.14,TOP,f(1.5)],'2.5 ft high',[.05,0,0])
 /* labels */
 const labels=[];
 const lab=(t,x,y,z)=>{const m=cv(512,128,(c,W,H)=>{rr(c,4,14,W-8,H-28,50,M);tx(c,t,W/2,H/2+2,44,'#fff','center')});const s=new THREE.Sprite(new THREE.SpriteMaterial({map:m,depthTest:false}));s.scale.set(.36,.09,1);s.position.set(x,y,z);s.renderOrder=9;labels.push(s);sc.add(s)};
-lab('1 · SPEED',-.1,.92,1.64);lab('2 · SURVEILLANCE',.1,1.04,1.64);lab('3 · GAMING & 3D',-.05,1.14,.78);lab('4 · 4K VIDEO',0,2.4,.1);
+lab('2 · SURVEILLANCE',0,1.0,1.6);lab('1 · SPEED',0,1.08,1.2);lab('2 · LIVE FEED',0,1.16,.82);lab('3 · GAMING & 3D',-.48,1.06,.27);lab('ZHomeFi 5G',0,1.4,.2);lab('5G CPE',.4,.98,.22);lab('5G CPE',.8,.98,.22);lab('LANDLINE',1.3,.98,.23);lab('4 · 4K VIDEO',0,2.4,.1);
 function LB(){labels.forEach(s=>s.visible=!s.visible)}
 function SB(){const on=!DG.visible;SZ.forEach(g=>g.visible=on);const b=document.getElementById('sb');b.textContent='Sizes: '+(on?'ON':'OFF');b.classList.toggle('on',on)}
 
