@@ -85,8 +85,8 @@ const T=new THREE.Group();T.position.set(0,TOP+.003,.2);T.scale.z=.75;sc.add(T);
 add(new THREE.CylinderGeometry(.085,.085,.4,48),mat(0xfafafa,{roughness:.35}),0,.2,0,T);
 const dc=new THREE.Mesh(new THREE.CylinderGeometry(.0857,.0857,.4,32,1,true,-.62,1.24),new THREE.MeshStandardMaterial({map:tTex,transparent:true,roughness:.4}));dc.position.y=.2;T.add(dc);
 const gm=mat(0x8dc63f,{emissive:0x5fd01c,emissiveIntensity:.9});
-[0,1,2].forEach(i=>{const t=add(new THREE.TorusGeometry(.035+.03*i,.005,8,28,Math.PI/2),gm,0,1.23,.2);t.rotation.z=Math.PI/4;t.castShadow=false});
-add(new THREE.SphereGeometry(.007,12,10),gm,0,1.23,.2);
+const arcs=x0=>{[0,1,2].forEach(i=>{const t=add(new THREE.TorusGeometry(.035+.03*i,.005,8,28,Math.PI/2),gm,x0,1.23,.2);t.rotation.z=Math.PI/4;t.castShadow=false});add(new THREE.SphereGeometry(.007,12,10),gm,x0,1.23,.2)};arcs(0);arcs(.4);
+const T2=T.clone(true);T2.position.set(.4,TOP+.003,.2);sc.add(T2);
 const gl=new THREE.PointLight(0x7fff3a,.6,1.2);gl.position.set(0,1.3,.35);sc.add(gl);
 
 /* gadget screens */
@@ -116,14 +116,13 @@ const lap=new THREE.Group();lap.position.set(-.48,TOP+.003,.27);sc.add(lap);cons
 add(B(.32,.016,.22),al,0,.008,0,lap);add(B(.28,.002,.1),mat(0x23252b),0,.017,-.02,lap);
 const lid=new THREE.Group();lid.position.set(0,.016,-.11);lid.rotation.x=-.28;lap.add(lid);add(B(.32,.21,.01),al,0,.105,0,lid);scr(.30,.19,lapTex,lid,.105,.0055);
 
-/* two 5G CPE units – right of the router */
-const cpeT=(w,h,tall)=>cv(w,h,(x,W,H)=>{x.clearRect(0,0,W,H);
- if(tall){logo(x,W*.1,H*.05,W*.25);x.strokeStyle='#777';x.lineWidth=4;x.beginPath();x.arc(W/2,H*.27,36,0,7);x.stroke();tx(x,'5G',W/2,H*.27,30,'#555','center',800);zh(x,W/2,H*.45,30,'#333');[['5G','#27b8ff'],['4G','#27b8ff'],['STATUS','#2ee06b']].forEach((l,i)=>{const y=H*(.78+i*.06);x.fillStyle=l[1];x.beginPath();x.arc(W*.3,y,6,0,7);x.fill();tx(x,l[0],W*.3+16,y,18,'#666','left',600)})}
- else{logo(x,W*.08,H*.1,W*.19);zh(x,W*.5,H*.52,50,'#333');tx(x,'5G CPE',W*.5,H*.7,26,'#777','center',700);[0,1,2].forEach(i=>{x.fillStyle=['#27b8ff','#27b8ff','#2ee06b'][i];x.beginPath();x.arc(W*.38+i*W*.12,H*.88,7,0,7);x.fill()})}});
-const cpeA=new THREE.Group();cpeA.position.set(.4,TOP+.003,.22);sc.add(cpeA);
-add(rbg(.11,.3,.09,.035),mat(0xfafafa,{roughness:.35}),0,.15,0,cpeA);dec(.1,.28,cpeT(220,600,1),cpeA,.15,.0455);
-const cpeB=new THREE.Group();cpeB.position.set(.8,TOP+.003,.22);sc.add(cpeB);
-add(rbg(.17,.2,.085,.04),mat(0xfafafa,{roughness:.35}),0,.1,0,cpeB);dec(.16,.19,cpeT(340,400,0),cpeB,.1,.043);
+/* tablet on stand – next to the CPE, before the landline */
+const tbT=cv(980,680,(x,W,H)=>{x.clearRect(0,0,W,H);rr(x,0,0,W,H,40,'#0b0b0d');x.save();x.beginPath();x.roundRect?x.roundRect(20,20,W-40,H-40,26):x.rect(20,20,W-40,H-40);x.clip();bg(x,W,H,'#13201c','#0a0e10');
+ [0,1].forEach(r=>[0,1].forEach(c=>{const X=45+c*455,Y=95+r*270;rr(x,X,Y,430,250,14,'#1c2a36');tx(x,'CAM 0'+(r*2+c+1),X+18,Y+28,22,'#cfe','left',700);x.fillStyle='#ff3b3b';x.beginPath();x.arc(X+400,Y+26,7,0,7);x.fill()}));
+ tx(x,'LIVE · SURVEILLANCE',45,58,30,G,'left',800);tx(x,'ZHomeFi 5G',W-45,58,26,'#fff','right',700);x.restore()});
+const tbl=new THREE.Group();tbl.position.set(.85,TOP+.003,.25);sc.add(tbl);
+const tbi=new THREE.Group();tbi.rotation.x=-.3;tbl.add(tbi);add(rbg(.25,.17,.008,.014),mat(0xc9ccd2,{metalness:.5,roughness:.3}),0,.085,0,tbi);dec(.25,.17,tbT,tbi,.085,.0044);
+add(B(.04,.15,.006),mat(0x222226),0,.072,-.075,tbl).rotation.x=.33;add(B(.12,.008,.07),mat(0x222226),0,.004,-.03,tbl);
 
 /* desktop corded landline (black, LCD, keypad, handset on the left, coil cord) – extreme right */
 const ldT=cv(520,800,(x,W,H)=>{x.fillStyle='#17171b';x.fillRect(0,0,W,H);
@@ -204,7 +203,7 @@ dm(DG,[f(-3.75)-.14,0,f(1.5)],[f(-3.75)-.14,TOP,f(1.5)],'2.5 ft high',[.05,0,0])
 /* labels */
 const labels=[];
 const lab=(t,x,y,z)=>{const m=cv(512,128,(c,W,H)=>{rr(c,4,14,W-8,H-28,50,M);tx(c,t,W/2,H/2+2,44,'#fff','center')});const s=new THREE.Sprite(new THREE.SpriteMaterial({map:m,depthTest:false}));s.scale.set(.36,.09,1);s.position.set(x,y,z);s.renderOrder=9;labels.push(s);sc.add(s)};
-lab('2 · SURVEILLANCE',0,1.0,1.6);lab('1 · SPEED',0,1.08,1.2);lab('2 · LIVE FEED',0,1.16,.82);lab('3 · GAMING & 3D',-.48,1.06,.27);lab('ZHomeFi 5G',0,1.4,.2);lab('5G CPE',.4,.98,.22);lab('5G CPE',.8,.98,.22);lab('LANDLINE',1.3,.98,.23);lab('4 · 4K VIDEO',0,2.4,.1);
+lab('2 · SURVEILLANCE',0,1.0,1.6);lab('1 · SPEED',0,1.08,1.2);lab('2 · LIVE FEED',0,1.16,.82);lab('3 · GAMING & 3D',-.48,1.06,.27);lab('ZHomeFi 5G',0,1.4,.2);lab('ZHomeFi 5G',.4,1.4,.2);lab('TABLET',.85,.98,.25);lab('LANDLINE',1.3,.98,.23);lab('4 · 4K VIDEO',0,2.4,.1);
 function LB(){labels.forEach(s=>s.visible=!s.visible)}
 function SB(){const on=!DG.visible;SZ.forEach(g=>g.visible=on);const b=document.getElementById('sb');b.textContent='Sizes: '+(on?'ON':'OFF');b.classList.toggle('on',on)}
 
